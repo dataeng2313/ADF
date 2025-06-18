@@ -8,11 +8,11 @@
 		"parameters": {
 			"Directory": {
 				"type": "string",
-				"defaultValue": "@item().value.schema_name"
+				"defaultValue": "@item().schema_name"
 			},
 			"File": {
 				"type": "string",
-				"defaultValue": "@item().value.table_name"
+				"defaultValue": "@item().table_name"
 			}
 		},
 		"annotations": [],

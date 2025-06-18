@@ -66,7 +66,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"items": {
-						"value": "@activity('Filter1').output",
+						"value": "@activity('Filter1').output.Value",
 						"type": "Expression"
 					},
 					"activities": [
@@ -77,7 +77,7 @@
 							"userProperties": [],
 							"typeProperties": {
 								"expression": {
-									"value": "@equals(item().value.load_type,'initial')",
+									"value": "@equals(item().load_type,'initial')",
 									"type": "Expression"
 								},
 								"ifTrueActivities": [
@@ -126,10 +126,13 @@
 												"type": "DatasetReference",
 												"parameters": {
 													"schema": {
-														"value": "@item().value.schema_name",
+														"value": "@item().schema_name",
 														"type": "Expression"
 													},
-													"table": "@item().value.table_name"
+													"table": {
+														"value": "@item().table_name",
+														"type": "Expression"
+													}
 												}
 											}
 										],
@@ -139,11 +142,11 @@
 												"type": "DatasetReference",
 												"parameters": {
 													"Directory": {
-														"value": "@item().value.schema_name",
+														"value": "@item().schema_name",
 														"type": "Expression"
 													},
 													"File": {
-														"value": "@item().value.table_name",
+														"value": "@concat(item().table_name,' ',utcNow())",
 														"type": "Expression"
 													}
 												}
