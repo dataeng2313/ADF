@@ -1,5 +1,5 @@
 {
-	"name": "ControlTable_HR_Schema",
+	"name": "ControlTable_Person_Schema",
 	"properties": {
 		"activities": [
 			{
@@ -47,7 +47,7 @@
 						"type": "Expression"
 					},
 					"condition": {
-						"value": "@equals(item().schema_name,'HumanResources')",
+						"value": "@equals(item().schema_name,'Person')",
 						"type": "Expression"
 					}
 				}
