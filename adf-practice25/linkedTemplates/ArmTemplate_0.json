@@ -11,6 +11,10 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'accountKey' of 'AzureDataLakeStorage1'"
 		},
+		"AzureSqlDatabase1_password": {
+			"type": "secureString",
+			"metadata": "Secure string for 'password' of 'AzureSqlDatabase1'"
+		},
 		"VinDetailsTable_password": {
 			"type": "secureString",
 			"metadata": "Secure string for 'password' of 'VinDetailsTable'"
@@ -26,6 +30,18 @@
 		"AzureKeyVault1_properties_typeProperties_baseUrl": {
 			"type": "string",
 			"defaultValue": "https://kvpractice.vault.azure.net/"
+		},
+		"AzureSqlDatabase1_properties_typeProperties_server": {
+			"type": "string",
+			"defaultValue": "ss-practice.database.windows.net"
+		},
+		"AzureSqlDatabase1_properties_typeProperties_database": {
+			"type": "string",
+			"defaultValue": "dbpractice"
+		},
+		"AzureSqlDatabase1_properties_typeProperties_userName": {
+			"type": "string",
+			"defaultValue": "utkarsh"
 		},
 		"VinDetailsTable_properties_typeProperties_server": {
 			"type": "string",
@@ -82,6 +98,28 @@
 				"type": "AzureKeyVault",
 				"typeProperties": {
 					"baseUrl": "[parameters('AzureKeyVault1_properties_typeProperties_baseUrl')]"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/AzureSqlDatabase1')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureSqlDatabase",
+				"typeProperties": {
+					"server": "[parameters('AzureSqlDatabase1_properties_typeProperties_server')]",
+					"database": "[parameters('AzureSqlDatabase1_properties_typeProperties_database')]",
+					"encrypt": "mandatory",
+					"trustServerCertificate": false,
+					"authenticationType": "SQL",
+					"userName": "[parameters('AzureSqlDatabase1_properties_typeProperties_userName')]",
+					"password": {
+						"type": "SecureString",
+						"value": "[parameters('AzureSqlDatabase1_password')]"
+					}
 				}
 			},
 			"dependsOn": []
@@ -170,6 +208,44 @@
 							"type": "Expression"
 						},
 						"folderPath": "landing",
+						"fileSystem": "utkarsh"
+					}
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AzureDataLakeStorage1')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/Binary2')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureDataLakeStorage1",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"folder": {
+						"type": "string"
+					},
+					"filename": {
+						"type": "string"
+					}
+				},
+				"annotations": [],
+				"type": "Binary",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileName": {
+							"value": "@dataset().filename",
+							"type": "Expression"
+						},
+						"folderPath": {
+							"value": "@dataset().folder",
+							"type": "Expression"
+						},
 						"fileSystem": "utkarsh"
 					}
 				}
@@ -268,11 +344,11 @@
 				"parameters": {
 					"Directory": {
 						"type": "string",
-						"defaultValue": "@item().value.schema_name"
+						"defaultValue": "@item().schema_name"
 					},
 					"File": {
 						"type": "string",
-						"defaultValue": "@item().value.table_name"
+						"defaultValue": "@item().table_name"
 					}
 				},
 				"annotations": [],
@@ -1070,11 +1146,11 @@
 				"parameters": {
 					"schema": {
 						"type": "string",
-						"defaultValue": "@item().value.schema_name"
+						"defaultValue": "@item().schema_name"
 					},
 					"table": {
 						"type": "string",
-						"defaultValue": "@item().value.table_name"
+						"defaultValue": "@item().table_name"
 					}
 				},
 				"annotations": [],
@@ -1096,7 +1172,7 @@
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/ControlTable')]",
+			"name": "[concat(parameters('factoryName'), '/ControlTable_HR_Schema')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
 			"properties": {
@@ -1166,7 +1242,7 @@
 						"userProperties": [],
 						"typeProperties": {
 							"items": {
-								"value": "@activity('Filter1').output",
+								"value": "@activity('Filter1').output.Value",
 								"type": "Expression"
 							},
 							"activities": [
@@ -1177,14 +1253,147 @@
 									"userProperties": [],
 									"typeProperties": {
 										"expression": {
-											"value": "@equals(item().value.load_type,'initial')",
+											"value": "@equals(item().load_type,'initial')",
 											"type": "Expression"
 										},
+										"ifFalseActivities": [
+											{
+												"name": "Copy data2",
+												"type": "Copy",
+												"dependsOn": [],
+												"policy": {
+													"timeout": "0.12:00:00",
+													"retry": 0,
+													"retryIntervalInSeconds": 30,
+													"secureOutput": false,
+													"secureInput": false
+												},
+												"userProperties": [],
+												"typeProperties": {
+													"source": {
+														"type": "SqlServerSource",
+														"sqlReaderQuery": {
+															"value": "@concat(\n  'SELECT * FROM ', item().schema_name, '.', item().table_name,\n  ' WHERE ', item().cdc_column_name, ' > ''', item().cdc_offset_value, '''',\n  ' AND ', item().cdc_column_name, ' <= ''', formatDateTime(addDays(item().cdc_offset_value, 31), 'yyyy-MM-dd'), ''''\n)\n",
+															"type": "Expression"
+														},
+														"queryTimeout": "02:00:00",
+														"partitionOption": "None"
+													},
+													"sink": {
+														"type": "DelimitedTextSink",
+														"storeSettings": {
+															"type": "AzureBlobFSWriteSettings"
+														},
+														"formatSettings": {
+															"type": "DelimitedTextWriteSettings",
+															"quoteAllText": true,
+															"fileExtension": ".txt"
+														}
+													},
+													"enableStaging": false,
+													"translator": {
+														"type": "TabularTranslator",
+														"typeConversion": true,
+														"typeConversionSettings": {
+															"allowDataTruncation": true,
+															"treatBooleanAsNumber": false
+														}
+													}
+												},
+												"inputs": [
+													{
+														"referenceName": "SqlServerTable1",
+														"type": "DatasetReference",
+														"parameters": {
+															"schema": "@item().schema_name",
+															"table": "@item().table_name"
+														}
+													}
+												],
+												"outputs": [
+													{
+														"referenceName": "DelimitedText1",
+														"type": "DatasetReference",
+														"parameters": {
+															"Directory": "@item().schema_name",
+															"File": {
+																"value": "@concat(item().table_name,'_',utcNow())",
+																"type": "Expression"
+															}
+														}
+													}
+												]
+											},
+											{
+												"name": "Stored procedure1",
+												"type": "SqlServerStoredProcedure",
+												"dependsOn": [
+													{
+														"activity": "Copy data2",
+														"dependencyConditions": [
+															"Succeeded"
+														]
+													}
+												],
+												"policy": {
+													"timeout": "0.12:00:00",
+													"retry": 0,
+													"retryIntervalInSeconds": 30,
+													"secureOutput": false,
+													"secureInput": false
+												},
+												"userProperties": [],
+												"typeProperties": {
+													"storedProcedureName": "[[dbo].[USP_UPDATE_CONTROL_TABLE]",
+													"storedProcedureParameters": {
+														"cdc_offset": {
+															"value": {
+																"value": "@addDays(item().cdc_offset_value,31)",
+																"type": "Expression"
+															},
+															"type": "String"
+														},
+														"schema_name": {
+															"value": {
+																"value": "@item().schema_name",
+																"type": "Expression"
+															},
+															"type": "String"
+														},
+														"table_name": {
+															"value": {
+																"value": "@item().table_name",
+																"type": "Expression"
+															},
+															"type": "String"
+														},
+														"updt_dt": {
+															"value": {
+																"value": "@utcNow()",
+																"type": "Expression"
+															},
+															"type": "Datetime"
+														}
+													}
+												},
+												"linkedServiceName": {
+													"referenceName": "AzureSqlDatabase1",
+													"type": "LinkedServiceReference"
+												}
+											}
+										],
 										"ifTrueActivities": [
 											{
 												"name": "Copy data1",
 												"type": "Copy",
-												"dependsOn": [],
+												"dependsOn": [
+													{
+														"activity": "Delete1",
+														"dependencyConditions": [
+															"Succeeded"
+														]
+													}
+												],
 												"policy": {
 													"timeout": "0.12:00:00",
 													"retry": 0,
@@ -1226,10 +1435,13 @@
 														"type": "DatasetReference",
 														"parameters": {
 															"schema": {
-																"value": "@item().value.schema_name",
+																"value": "@item().schema_name",
 																"type": "Expression"
 															},
-															"table": "@item().value.table_name"
+															"table": {
+																"value": "@item().table_name",
+																"type": "Expression"
+															}
 														}
 													}
 												],
@@ -1239,16 +1451,105 @@
 														"type": "DatasetReference",
 														"parameters": {
 															"Directory": {
-																"value": "@item().value.schema_name",
+																"value": "@item().schema_name",
 																"type": "Expression"
 															},
 															"File": {
-																"value": "@item().value.table_name",
+																"value": "@item().table_name",
 																"type": "Expression"
 															}
 														}
 													}
 												]
+											},
+											{
+												"name": "Delete1",
+												"type": "Delete",
+												"dependsOn": [],
+												"policy": {
+													"timeout": "0.12:00:00",
+													"retry": 0,
+													"retryIntervalInSeconds": 30,
+													"secureOutput": false,
+													"secureInput": false
+												},
+												"userProperties": [],
+												"typeProperties": {
+													"dataset": {
+														"referenceName": "Binary2",
+														"type": "DatasetReference",
+														"parameters": {
+															"folder": {
+																"value": "@item().schema_name",
+																"type": "Expression"
+															},
+															"filename": {
+																"value": "@item().table_name",
+																"type": "Expression"
+															}
+														}
+													},
+													"enableLogging": false,
+													"storeSettings": {
+														"type": "AzureBlobFSReadSettings",
+														"recursive": true,
+														"enablePartitionDiscovery": false
+													}
+												}
+											},
+											{
+												"name": "Stored procedure2",
+												"type": "SqlServerStoredProcedure",
+												"dependsOn": [
+													{
+														"activity": "Copy data1",
+														"dependencyConditions": [
+															"Succeeded"
+														]
+													}
+												],
+												"policy": {
+													"timeout": "0.12:00:00",
+													"retry": 0,
+													"retryIntervalInSeconds": 30,
+													"secureOutput": false,
+													"secureInput": false
+												},
+												"userProperties": [],
+												"typeProperties": {
+													"storedProcedureName": "[[dbo].[USP_UPDATE_CONTROL_TABLE]",
+													"storedProcedureParameters": {
+														"cdc_offset": {
+															"value": null,
+															"type": "String"
+														},
+														"schema_name": {
+															"value": {
+																"value": "@item().schema_name",
+																"type": "Expression"
+															},
+															"type": "String"
+														},
+														"table_name": {
+															"value": {
+																"value": "@item().table_name",
+																"type": "Expression"
+															},
+															"type": "String"
+														},
+														"updt_dt": {
+															"value": {
+																"value": "@utcNow()",
+																"type": "Expression"
+															},
+															"type": "Datetime"
+														}
+													}
+												},
+												"linkedServiceName": {
+													"referenceName": "AzureSqlDatabase1",
+													"type": "LinkedServiceReference"
+												}
 											}
 										]
 									}
@@ -1270,79 +1571,9 @@
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/datasets/ControlTableDataset')]",
 				"[concat(variables('factoryId'), '/datasets/SqlServerTable1')]",
-				"[concat(variables('factoryId'), '/datasets/DelimitedText1')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/CopyData')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"activities": [
-					{
-						"name": "Copy data1",
-						"type": "Copy",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"source": {
-								"type": "SqlServerSource",
-								"queryTimeout": "02:00:00",
-								"partitionOption": "None"
-							},
-							"sink": {
-								"type": "DelimitedTextSink",
-								"storeSettings": {
-									"type": "AzureBlobFSWriteSettings"
-								},
-								"formatSettings": {
-									"type": "DelimitedTextWriteSettings",
-									"quoteAllText": true,
-									"fileExtension": ".txt"
-								}
-							},
-							"enableStaging": false,
-							"translator": {
-								"type": "TabularTranslator",
-								"typeConversion": true,
-								"typeConversionSettings": {
-									"allowDataTruncation": true,
-									"treatBooleanAsNumber": false
-								}
-							}
-						},
-						"inputs": [
-							{
-								"referenceName": "SqlServerCopy",
-								"type": "DatasetReference",
-								"parameters": {}
-							}
-						],
-						"outputs": [
-							{
-								"referenceName": "ADLSCopy",
-								"type": "DatasetReference",
-								"parameters": {}
-							}
-						]
-					}
-				],
-				"policy": {
-					"elapsedTimeMetric": {}
-				},
-				"annotations": [],
-				"lastPublishTime": "2025-06-09T14:35:57Z"
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/datasets/SqlServerCopy')]",
-				"[concat(variables('factoryId'), '/datasets/ADLSCopy')]"
+				"[concat(variables('factoryId'), '/datasets/DelimitedText1')]",
+				"[concat(variables('factoryId'), '/linkedServices/AzureSqlDatabase1')]",
+				"[concat(variables('factoryId'), '/datasets/Binary2')]"
 			]
 		}
 	]

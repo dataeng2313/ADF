@@ -8,6 +8,9 @@
 		"AzureDataLakeStorage1_accountKey": {
 			"value": ""
 		},
+		"AzureSqlDatabase1_password": {
+			"value": ""
+		},
 		"SqlServer1_password": {
 			"value": ""
 		},
@@ -19,6 +22,15 @@
 		},
 		"AzureKeyVault1_properties_typeProperties_baseUrl": {
 			"value": "https://kvpractice.vault.azure.net/"
+		},
+		"AzureSqlDatabase1_properties_typeProperties_server": {
+			"value": "ss-practice.database.windows.net"
+		},
+		"AzureSqlDatabase1_properties_typeProperties_database": {
+			"value": "dbpractice"
+		},
+		"AzureSqlDatabase1_properties_typeProperties_userName": {
+			"value": "utkarsh"
 		},
 		"SqlServer1_properties_typeProperties_server": {
 			"value": "LAPTOP-042GJ4NR"
