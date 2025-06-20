@@ -21,24 +21,24 @@ jobs:
         
     - name: install ADF Utilities package
       run: npm install
-      working-directory: ${{/dataeng2313/ADF/tree/main/build}}  # (1) provide the folder location of the package.json file
+      working-directory: /dataeng2313/ADF/tree/main/build  # (1) provide the folder location of the package.json file
         
 # Validates all of the Data Factory resources in the repository. You'll get the same validation errors as when "Validate All" is selected.
     - name: Validate
-      run: npm run build validate ${{github.workspace}}/ /subscriptions/668ccbc2-39ae-4f35-a21d-e5798ed22019/resourceGroups/rg-practice/providers/Microsoft.DataFactory/factories/adf-practice25 # (2) The validate command needs the root folder location of your repository where all the objects are stored. And the 2nd parameter is the resourceID of the ADF instance 
-      working-directory: ${{github.workspace}}/build
+      run: npm run build validate /dataeng2313/ADF/tree/main}/ /subscriptions/668ccbc2-39ae-4f35-a21d-e5798ed22019/resourceGroups/rg-practice/providers/Microsoft.DataFactory/factories/adf-practice25 # (2) The validate command needs the root folder location of your repository where all the objects are stored. And the 2nd parameter is the resourceID of the ADF instance 
+      working-directory: /dataeng2313/ADF/tree/main/build
  
 
     - name: Validate and Generate ARM template
-      run: npm run build export ${{github.workspace}}/ /subscriptions/668ccbc2-39ae-4f35-a21d-e5798ed22019/resourceGroups/rg-practice/providers/Microsoft.DataFactory/factories/adf-practice25 "ExportedArmTemplate"  # (3) The build command, as validate, needs the root folder location of your repository where all the objects are stored. And the 2nd parameter is the resourceID of the ADF instance. The 3rd parameter is the exported ARM template artifact name 
-      working-directory: ${{github.workspace}}/build
+      run: npm run build export /dataeng2313/ADF/tree/main/ /subscriptions/668ccbc2-39ae-4f35-a21d-e5798ed22019/resourceGroups/rg-practice/providers/Microsoft.DataFactory/factories/adf-practice25 "ExportedArmTemplate"  # (3) The build command, as validate, needs the root folder location of your repository where all the objects are stored. And the 2nd parameter is the resourceID of the ADF instance. The 3rd parameter is the exported ARM template artifact name 
+      working-directory: /dataeng2313/ADF/tree/main/build
  
 # In order to leverage the artifact in another job, we need to upload it with the upload action 
     - name: upload artifact
       uses: actions/upload-artifact@v4
       with:
         name: ExportedArmTemplate # (4) use the same artifact name you used in the previous export step
-        path: ${{github.workspace}}/build/ExportedArmTemplate
+        path: /dataeng2313/ADF/tree/main/build/ExportedArmTemplate
 
   release:
     needs: build
