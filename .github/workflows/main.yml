@@ -1,2 +1,13 @@
 name: Print GITHUB_WORKSPACE
-echo "GITHUB_WORKSPACE=$GITHUB_WORKSPACE"
+
+on: [push]
+
+jobs:
+  show-workspace:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Print GITHUB_WORKSPACE
+        run: echo "GITHUB_WORKSPACE=$GITHUB_WORKSPACE"
