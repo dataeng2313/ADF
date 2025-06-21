@@ -1,0 +1,28 @@
+{
+	"name": "Binary1",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureDataLakeStorage1",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"Fname": {
+				"type": "string"
+			}
+		},
+		"annotations": [],
+		"type": "Binary",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileName": {
+					"value": "@dataset().Fname",
+					"type": "Expression"
+				},
+				"folderPath": "landing",
+				"fileSystem": "utkarsh"
+			}
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}
