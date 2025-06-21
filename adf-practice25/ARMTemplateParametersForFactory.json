@@ -11,9 +11,6 @@
 		"AzureSqlDatabase1_password": {
 			"value": ""
 		},
-		"SqlServer1_password": {
-			"value": ""
-		},
 		"VinDetailsTable_password": {
 			"value": ""
 		},
@@ -49,6 +46,15 @@
 		},
 		"VinDetailsTable_properties_typeProperties_userName": {
 			"value": "utkarsh"
+		},
+		"SqlServer2_properties_typeProperties_server": {
+			"value": "LAPTOP-042GJ4NR"
+		},
+		"SqlServer2_properties_typeProperties_database": {
+			"value": "AdventureWorks2022"
+		},
+		"SqlServer2_properties_typeProperties_userName": {
+			"value": "LAPTOP-042GJ4NR\\Ashu"
 		}
 	}
 }
