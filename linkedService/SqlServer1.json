@@ -8,11 +8,11 @@
 		"typeProperties": {
 			"server": "LAPTOP-042GJ4NR",
 			"database": "AdventureWorks2022",
-			"encrypt": "optional",
+			"encrypt": "mandatory",
 			"trustServerCertificate": true,
 			"authenticationType": "Windows",
 			"userName": "LAPTOP-042GJ4NR\\Ashu",
-			"encryptedCredential": "eyJDcmVkZW50aWFsSWQiOiJhMjViMzUzYi0zMjc1LTQ5NTMtYTcyOS1lNjE5ZWQ3OTJiNWUiLCJWZXJzaW9uIjoiMi4wIiwiQ2xhc3NUeXBlIjoiTWljcm9zb2Z0LkRhdGFQcm94eS5Db3JlLkludGVyU2VydmljZURhdGFDb250cmFjdC5DcmVkZW50aWFsU1UwNkNZMTQifQ=="
+			"encryptedCredential": "eyJDcmVkZW50aWFsSWQiOiIyMmM3MzU3OS0yYWM3LTQzMzgtYTUzOC00ZTk4YmUzM2Q1YzMiLCJWZXJzaW9uIjoiMi4wIiwiQ2xhc3NUeXBlIjoiTWljcm9zb2Z0LkRhdGFQcm94eS5Db3JlLkludGVyU2VydmljZURhdGFDb250cmFjdC5DcmVkZW50aWFsU1UwNkNZMTQifQ=="
 		},
 		"connectVia": {
 			"referenceName": "integrationRuntime1",
