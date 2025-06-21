@@ -1,6 +1,5 @@
 {
 	"name": "SqlServer1",
-	"type": "Microsoft.DataFactory/factories/linkedservices",
 	"properties": {
 		"description": "Linked service for SQL Server",
 		"annotations": [],
@@ -12,11 +11,19 @@
 			"trustServerCertificate": true,
 			"authenticationType": "Windows",
 			"userName": "LAPTOP-042GJ4NR\\Ashu",
-			"encryptedCredential": "eyJDcmVkZW50aWFsSWQiOiIyMmM3MzU3OS0yYWM3LTQzMzgtYTUzOC00ZTk4YmUzM2Q1YzMiLCJWZXJzaW9uIjoiMi4wIiwiQ2xhc3NUeXBlIjoiTWljcm9zb2Z0LkRhdGFQcm94eS5Db3JlLkludGVyU2VydmljZURhdGFDb250cmFjdC5DcmVkZW50aWFsU1UwNkNZMTQifQ=="
+			"password": {
+				"type": "AzureKeyVaultSecret",
+				"store": {
+					"referenceName": "AzureKeyVault1",
+					"type": "LinkedServiceReference"
+				},
+				"secretName": "sqlserver"
+			}
 		},
 		"connectVia": {
 			"referenceName": "integrationRuntime1",
 			"type": "IntegrationRuntimeReference"
 		}
-	}
+	},
+	"type": "Microsoft.DataFactory/factories/linkedservices"
 }
