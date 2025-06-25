@@ -12,14 +12,56 @@
 				},
 				"userProperties": [],
 				"typeProperties": {
-					"variableName": "FileName",
-					"value": "Department"
+					"variableName": "file_path",
+					"value": {
+						"value": "/mnt/utkarsh/HumanResources/Department",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "Notebook1",
+				"type": "DatabricksNotebook",
+				"dependsOn": [
+					{
+						"activity": "Set variable1",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 1,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [
+					{
+						"name": "",
+						"value": ""
+					}
+				],
+				"typeProperties": {
+					"notebookPath": "/Users/seema.sinha231325@gmail.com/databricks-practice/ADF-ADB",
+					"baseParameters": {
+						"file_path": {
+							"value": "@variables('file_path')",
+							"type": "Expression"
+						}
+					}
+				},
+				"linkedServiceName": {
+					"referenceName": "AzureDatabricks1",
+					"type": "LinkedServiceReference"
 				}
 			}
 		],
 		"variables": {
-			"FileName": {
-				"type": "String"
+			"file_path": {
+				"type": "String",
+				"defaultValue": "'/mnt/utkarsh/HumanResources/Department'"
 			}
 		},
 		"annotations": []

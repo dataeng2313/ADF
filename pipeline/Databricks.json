@@ -1,0 +1,12 @@
+{
+	"name": "Databricks",
+	"properties": {
+		"variables": {
+			"file_path": {
+				"type": "String",
+				"defaultValue": "'/mnt/utkarsh/HumanResources/Department'"
+			}
+		},
+		"annotations": []
+	}
+}
