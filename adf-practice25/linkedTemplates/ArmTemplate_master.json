@@ -11,6 +11,10 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'accountKey' of 'AzureDataLakeStorage1'"
 		},
+		"AzureDatabricks1_accessToken": {
+			"type": "secureString",
+			"metadata": "Secure string for 'accessToken' of 'AzureDatabricks1'"
+		},
 		"AzureSqlDatabase1_password": {
 			"type": "secureString",
 			"metadata": "Secure string for 'password' of 'AzureSqlDatabase1'"
@@ -22,6 +26,10 @@
 		"AzureDataLakeStorage1_properties_typeProperties_url": {
 			"type": "string",
 			"defaultValue": "https://sapractice25.dfs.core.windows.net/"
+		},
+		"AzureDatabricks1_properties_typeProperties_existingClusterId": {
+			"type": "string",
+			"defaultValue": "0623-123108-2au00esp"
 		},
 		"AzureKeyVault1_properties_typeProperties_baseUrl": {
 			"type": "string",
@@ -51,18 +59,6 @@
 			"type": "string",
 			"defaultValue": "LAPTOP-042GJ4NR\\Ashu"
 		},
-		"VinDetailsTable_properties_typeProperties_server": {
-			"type": "string",
-			"defaultValue": "ss-practice.database.windows.net"
-		},
-		"VinDetailsTable_properties_typeProperties_database": {
-			"type": "string",
-			"defaultValue": "dbpractice"
-		},
-		"VinDetailsTable_properties_typeProperties_userName": {
-			"type": "string",
-			"defaultValue": "utkarsh"
-		},
 		"SqlServer2_properties_typeProperties_server": {
 			"type": "string",
 			"defaultValue": "LAPTOP-042GJ4NR"
@@ -74,6 +70,18 @@
 		"SqlServer2_properties_typeProperties_userName": {
 			"type": "string",
 			"defaultValue": "LAPTOP-042GJ4NR\\Ashu"
+		},
+		"VinDetailsTable_properties_typeProperties_server": {
+			"type": "string",
+			"defaultValue": "ss-practice.database.windows.net"
+		},
+		"VinDetailsTable_properties_typeProperties_database": {
+			"type": "string",
+			"defaultValue": "dbpractice"
+		},
+		"VinDetailsTable_properties_typeProperties_userName": {
+			"type": "string",
+			"defaultValue": "utkarsh"
 		},
 		"containerUri": {
 			"type": "string",
@@ -105,6 +113,9 @@
 					"AzureDataLakeStorage1_accountKey": {
 						"value": "[parameters('AzureDataLakeStorage1_accountKey')]"
 					},
+					"AzureDatabricks1_accessToken": {
+						"value": "[parameters('AzureDatabricks1_accessToken')]"
+					},
 					"AzureSqlDatabase1_password": {
 						"value": "[parameters('AzureSqlDatabase1_password')]"
 					},
@@ -113,6 +124,9 @@
 					},
 					"AzureDataLakeStorage1_properties_typeProperties_url": {
 						"value": "[parameters('AzureDataLakeStorage1_properties_typeProperties_url')]"
+					},
+					"AzureDatabricks1_properties_typeProperties_existingClusterId": {
+						"value": "[parameters('AzureDatabricks1_properties_typeProperties_existingClusterId')]"
 					},
 					"AzureKeyVault1_properties_typeProperties_baseUrl": {
 						"value": "[parameters('AzureKeyVault1_properties_typeProperties_baseUrl')]"
