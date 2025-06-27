@@ -149,11 +149,35 @@
 										]
 									},
 									{
-										"name": "Stored procedure1",
-										"type": "SqlServerStoredProcedure",
+										"name": "Set variable2",
+										"type": "SetVariable",
 										"dependsOn": [
 											{
 												"activity": "Copy data2",
+												"dependencyConditions": [
+													"Succeeded"
+												]
+											}
+										],
+										"policy": {
+											"secureOutput": false,
+											"secureInput": false
+										},
+										"userProperties": [],
+										"typeProperties": {
+											"variableName": "tablename",
+											"value": {
+												"value": "item().table_name",
+												"type": "Expression"
+											}
+										}
+									},
+									{
+										"name": "Notebook2",
+										"type": "DatabricksNotebook",
+										"dependsOn": [
+											{
+												"activity": "Set variable2",
 												"dependencyConditions": [
 													"Succeeded"
 												]
@@ -168,40 +192,16 @@
 										},
 										"userProperties": [],
 										"typeProperties": {
-											"storedProcedureName": "[dbo].[USP_UPDATE_CONTROL_TABLE]",
-											"storedProcedureParameters": {
-												"cdc_offset": {
-													"value": {
-														"value": "@addDays(item().cdc_offset_value,31)",
-														"type": "Expression"
-													},
-													"type": "String"
-												},
-												"schema_name": {
-													"value": {
-														"value": "@item().schema_name",
-														"type": "Expression"
-													},
-													"type": "String"
-												},
-												"table_name": {
-													"value": {
-														"value": "@item().table_name",
-														"type": "Expression"
-													},
-													"type": "String"
-												},
-												"updt_dt": {
-													"value": {
-														"value": "@utcNow()",
-														"type": "Expression"
-													},
-													"type": "Datetime"
+											"notebookPath": "/Users/seema.sinha231325@gmail.com/databricks-practice/CopyData",
+											"baseParameters": {
+												"tablename": {
+													"value": "@variables('tablename')",
+													"type": "Expression"
 												}
 											}
 										},
 										"linkedServiceName": {
-											"referenceName": "AzureSqlDatabase1",
+											"referenceName": "AzureDatabricks1",
 											"type": "LinkedServiceReference"
 										}
 									}
@@ -225,6 +225,7 @@
 											"secureOutput": false,
 											"secureInput": false
 										},
+										"userProperties": [],
 										"typeProperties": {
 											"source": {
 												"type": "SqlServerSource",
@@ -323,8 +324,6 @@
 									{
 										"name": "Notebook1",
 										"type": "DatabricksNotebook",
-										"state": "Inactive",
-										"onInactiveMarkAs": "Succeeded",
 										"dependsOn": [
 											{
 												"activity": "Set variable1",
@@ -374,7 +373,7 @@
 										"typeProperties": {
 											"variableName": "tablename",
 											"value": {
-												"value": "@activity('Copy data1').output.dataWritten.files[0].name",
+												"value": "@item().table_name",
 												"type": "Expression"
 											}
 										}
