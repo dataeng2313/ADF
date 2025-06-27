@@ -37,12 +37,7 @@
 					"secureOutput": false,
 					"secureInput": false
 				},
-				"userProperties": [
-					{
-						"name": "file_path",
-						"value": ""
-					}
-				],
+				"userProperties": [],
 				"typeProperties": {
 					"notebookPath": "/Users/seema.sinha231325@gmail.com/databricks-practice/ADF-ADB",
 					"baseParameters": {
@@ -62,6 +57,9 @@
 			"file_path": {
 				"type": "String",
 				"defaultValue": "'/mnt/utkarsh/HumanResources/Department'"
+			},
+			"tablename": {
+				"type": "String"
 			}
 		},
 		"annotations": []
